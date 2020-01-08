@@ -1,4 +1,3 @@
-const NAME = () => {};
-  
-
-module.exports = { NAME };
+const KATANAME = () => {};
+ 
+module.exports = { KATANAME };

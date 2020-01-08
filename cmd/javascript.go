@@ -18,6 +18,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"path"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -34,32 +37,58 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		createFile(name + ".js")
+
+		os.Mkdir(name, os.ModePerm)
+		setupNode()
+
+		createFile(name, name, "mainFunction.js")
+		createFile(name, name+".spec", "testSuite.js")
 	},
 }
 
-func createFile(name string) {
+func setupNode() {
+	exec.Command("npm", "init", "-y").Run()
 
-	bs := createContents(name)
+	fmt.Println("Installing node dependencies")
+	exec.Command("npm", "install", "-D", "mocha", "chai").Run()
+
+	bs, err := ioutil.ReadFile("package.json")
+	if err != nil {
+		fmt.Println("error reading package.json", err)
+	}
+	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
+
+	fmt.Println(contents)
+	err = ioutil.WriteFile("package.json", []byte(contents), os.FileMode.Perm(0777))
+	if err != nil {
+		fmt.Println("error updating package.json", err)
+	}
+}
+
+func createFile(kataName string, fileName string, fileTemplate string) {
+
+	bs := createContents(kataName, fileTemplate)
 
 	fmt.Println(string(bs))
-	file, err := os.Create(name)
+	file, err := os.Create(fileName + ".js")
 
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("Error creating kata file", name)
+		fmt.Println("Error creating kata file", kataName)
 	}
 
 	file.Write(bs)
 }
 
-func createContents(name string) []byte {
-	bs, err := ioutil.ReadFile("/home/sbell5/go/src/kata/templates/mainFunction.js")
+func createContents(name string, template string) []byte {
+	bs, err := ioutil.ReadFile(path.Join("/home/sbell5/go/src/kata/templates/", template))
 
 	if err != nil {
 		fmt.Println("error reading template", err)
 	}
-	return bs
+
+	contents := strings.ReplaceAll(string(bs), "KATANAME", name)
+	return []byte(contents)
 }
 
 func init() {
