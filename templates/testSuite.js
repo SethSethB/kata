@@ -4,7 +4,6 @@ const { KATANAME } = require("./KATANAME");
 
 describe("KATANAME function", () => {
   it("executes", () => {
-    KATANAME()
+    KATANAME();
   });
-
 });

@@ -41,36 +41,43 @@ to quickly create a Cobra application.`,
 		os.Mkdir(name, os.ModePerm)
 		setupNode(name)
 
+		fmt.Println("Writing kata files...")
 		createFile(name, name, "mainFunction.js")
 		createFile(name, name+".spec", "testSuite.js")
+
+		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
+		fmt.Println(finalMessage)
 	},
 }
 
 func setupNode(folderName string) {
+
+	targetDir := path.Join("./", folderName)
 	initCmd := exec.Command("npm", "init", "-y")
-	initCmd.Dir = folderName
+	initCmd.Dir = targetDir
+
+	fmt.Println("Initialising npm...")
 	err := initCmd.Run()
 
 	if err != nil {
 		fmt.Println("Error inialising npm: ", err)
 	}
-	fmt.Println("UPDATED")
-	fmt.Println("Installing node dependencies....")
+	fmt.Println("Installing node dependencies...")
 	installCmd := exec.Command("npm", "install", "-D", "mocha", "chai")
-	installCmd.Dir = path.Join("/", folderName)
+	installCmd.Dir = targetDir
 	err = installCmd.Run()
 
 	if err != nil {
 		fmt.Println("Error installing node modules: ", err)
 	}
 
-	bs, err := ioutil.ReadFile("package.json")
+	bs, err := ioutil.ReadFile(path.Join(targetDir, "/package.json"))
 	if err != nil {
 		fmt.Println("error reading package.json", err)
 	}
 	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
 
-	err = ioutil.WriteFile("package.json", []byte(contents), os.ModePerm)
+	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
 	if err != nil {
 		fmt.Println("error updating package.json", err)
 	}
