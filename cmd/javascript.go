@@ -39,18 +39,30 @@ to quickly create a Cobra application.`,
 		name := args[0]
 
 		os.Mkdir(name, os.ModePerm)
-		setupNode()
+		setupNode(name)
 
 		createFile(name, name, "mainFunction.js")
 		createFile(name, name+".spec", "testSuite.js")
 	},
 }
 
-func setupNode() {
-	exec.Command("npm", "init", "-y").Run()
+func setupNode(folderName string) {
+	initCmd := exec.Command("npm", "init", "-y")
+	initCmd.Dir = folderName
+	err := initCmd.Run()
 
-	fmt.Println("Installing node dependencies")
-	exec.Command("npm", "install", "-D", "mocha", "chai").Run()
+	if err != nil {
+		fmt.Println("Error inialising npm: ", err)
+	}
+	fmt.Println("UPDATED")
+	fmt.Println("Installing node dependencies....")
+	installCmd := exec.Command("npm", "install", "-D", "mocha", "chai")
+	installCmd.Dir = path.Join("/", folderName)
+	err = installCmd.Run()
+
+	if err != nil {
+		fmt.Println("Error installing node modules: ", err)
+	}
 
 	bs, err := ioutil.ReadFile("package.json")
 	if err != nil {
@@ -58,8 +70,7 @@ func setupNode() {
 	}
 	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
 
-	fmt.Println(contents)
-	err = ioutil.WriteFile("package.json", []byte(contents), os.FileMode.Perm(0777))
+	err = ioutil.WriteFile("package.json", []byte(contents), os.ModePerm)
 	if err != nil {
 		fmt.Println("error updating package.json", err)
 	}
@@ -69,12 +80,10 @@ func createFile(kataName string, fileName string, fileTemplate string) {
 
 	bs := createContents(kataName, fileTemplate)
 
-	fmt.Println(string(bs))
-	file, err := os.Create(fileName + ".js")
+	file, err := os.Create(path.Join("./", kataName, fileName+".js"))
 
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Error creating kata file", kataName)
+		fmt.Println("Error creating kata file", kataName, err)
 	}
 
 	file.Write(bs)
@@ -85,7 +94,7 @@ func createContents(name string, template string) []byte {
 	bs, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", template))
 
 	if err != nil {
-		fmt.Println("error reading template", err)
+		fmt.Println("error reading template: ", err)
 	}
 
 	contents := strings.ReplaceAll(string(bs), "KATANAME", name)
