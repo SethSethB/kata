@@ -47,11 +47,17 @@ to quickly create a Cobra application.`,
 		}
 
 		os.Mkdir(name, os.ModePerm)
-		setupNode(name)
+		targetDir := path.Join("./", name)
+
+		setupNode(targetDir)
 
 		fmt.Println("Writing kata files...")
 		createFile(name, name, "mainFunction.js")
 		createFile(name, name+".spec", "testSuite.js")
+
+		if git == true {
+			initGit(targetDir)
+		}
 
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
 		fmt.Println(finalMessage)
@@ -72,23 +78,20 @@ func promptName() string {
 	return n
 }
 
-func setupNode(folderName string) {
-
-	targetDir := path.Join("./", folderName)
+func setupNode(targetDir string) {
 	initCmd := exec.Command("npm", "init", "-y")
 	initCmd.Dir = targetDir
 
 	fmt.Println("Initialising npm...")
 	err := initCmd.Run()
-
 	if err != nil {
 		fmt.Println("Error inialising npm: ", err)
 	}
+
 	fmt.Println("Installing node dependencies...")
 	installCmd := exec.Command("npm", "install", "-D", "mocha", "chai")
 	installCmd.Dir = targetDir
 	err = installCmd.Run()
-
 	if err != nil {
 		fmt.Println("Error installing node modules: ", err)
 	}
@@ -98,7 +101,6 @@ func setupNode(folderName string) {
 		fmt.Println("error reading package.json", err)
 	}
 	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
-
 	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
 	if err != nil {
 		fmt.Println("error updating package.json", err)
@@ -128,6 +130,31 @@ func createContents(name string, template string) []byte {
 
 	contents := strings.ReplaceAll(string(bs), "KATANAME", name)
 	return []byte(contents)
+}
+
+func initGit(targetDir string) {
+	initCmd := exec.Command("git", "init")
+	initCmd.Dir = targetDir
+
+	fmt.Println("Initialising git with initial commit...")
+	err := initCmd.Run()
+	if err != nil {
+		fmt.Println("error initalising git: ", err)
+	}
+
+	file, _ := os.Create(path.Join("./", targetDir, ".gitignore"))
+
+	bs := []byte("node_modules/")
+	file.Write(bs)
+
+	addCmd := exec.Command("git", "add", ".")
+	addCmd.Dir = targetDir
+	addCmd.Run()
+
+	commitCmd := exec.Command("git", "commit", "-m", "Initial commit")
+	commitCmd.Dir = targetDir
+	commitCmd.Run()
+
 }
 
 func init() {

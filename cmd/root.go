@@ -24,6 +24,7 @@ import (
 )
 
 var cfgFile string
+var git bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -56,6 +57,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.kata.yaml)")
+	RootCmd.PersistentFlags().BoolVarP(&git, "git", "g", false, "initalise git")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
