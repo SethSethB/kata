@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -36,7 +37,14 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		name := args[0]
+
+		var name string
+
+		if len(args) == 0 {
+			name = promptName()
+		} else {
+			name = args[0]
+		}
 
 		os.Mkdir(name, os.ModePerm)
 		setupNode(name)
@@ -48,6 +56,20 @@ to quickly create a Cobra application.`,
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
 		fmt.Println(finalMessage)
 	},
+}
+
+func promptName() string {
+	fmt.Print("Enter kata name: ")
+
+	s := bufio.NewScanner(os.Stdin)
+	s.Scan()
+	n := s.Text()
+
+	if len(n) == 0 {
+		return promptName()
+	}
+
+	return n
 }
 
 func setupNode(folderName string) {
