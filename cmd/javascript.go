@@ -56,7 +56,7 @@ to quickly create a Cobra application.`,
 		createFile(name, name+".spec", "testSuite.js")
 
 		if git == true {
-			initGit(targetDir)
+			InitGit(targetDir, []string{"node_modules", "plp", "pss"})
 		}
 
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
@@ -113,6 +113,8 @@ func createFile(kataName string, fileName string, fileTemplate string) {
 
 	file, err := os.Create(path.Join("./", kataName, fileName+".js"))
 
+	defer file.Close()
+
 	if err != nil {
 		fmt.Println("Error creating kata file", kataName, err)
 	}
@@ -122,39 +124,15 @@ func createFile(kataName string, fileName string, fileTemplate string) {
 
 func createContents(name string, template string) []byte {
 	gopath := os.Getenv("GOPATH")
+
 	bs, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", template))
 
 	if err != nil {
-		fmt.Println("error reading template: ", err)
+		fmt.Println("error reading template:", err)
 	}
 
 	contents := strings.ReplaceAll(string(bs), "KATANAME", name)
 	return []byte(contents)
-}
-
-func initGit(targetDir string) {
-	initCmd := exec.Command("git", "init")
-	initCmd.Dir = targetDir
-
-	fmt.Println("Initialising git with initial commit...")
-	err := initCmd.Run()
-	if err != nil {
-		fmt.Println("error initalising git: ", err)
-	}
-
-	file, _ := os.Create(path.Join("./", targetDir, ".gitignore"))
-
-	bs := []byte("node_modules/")
-	file.Write(bs)
-
-	addCmd := exec.Command("git", "add", ".")
-	addCmd.Dir = targetDir
-	addCmd.Run()
-
-	commitCmd := exec.Command("git", "commit", "-m", "Initial commit")
-	commitCmd.Dir = targetDir
-	commitCmd.Run()
-
 }
 
 func init() {
