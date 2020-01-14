@@ -17,6 +17,9 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -35,16 +38,47 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		name := args[0]
+
+		os.Mkdir(name, os.ModePerm)
+		targetDir := path.Join("./", name)
+
 		if gradle == true {
 			fmt.Println("Creating gradle project")
 		} else {
 			fmt.Println("Creating maven project")
+			createMaven(name, targetDir)
 		}
 
 		if git == true {
 			InitGit("./", []string{})
 		}
 	},
+}
+
+func createMaven(kataName, targetDir string) {
+
+	className := ConvertToUpperCamelCase(kataName)
+	pathName := strings.ToLower(kataName)
+
+	classDir := path.Join("./", pathName, "/main/java/com/kata")
+	testDir := path.Join("./", pathName, "/test/java/")
+
+	os.MkdirAll(classDir, os.ModePerm)
+	os.MkdirAll(testDir, os.ModePerm)
+
+	kataFile, err := os.Create(path.Join(classDir, className+".java"))
+	if err != nil {
+		fmt.Println("Error creating kata file", className, err)
+	}
+	defer kataFile.Close()
+
+	testFile, err := os.Create(path.Join(testDir, className+"Test.java"))
+	if err != nil {
+		fmt.Println("Error creating kata file", className, err)
+	}
+	defer testFile.Close()
+
 }
 
 func init() {

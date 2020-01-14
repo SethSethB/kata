@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 )
 
 //InitGit Initialises git, creates .gitignore and adds initial commit
@@ -38,5 +39,17 @@ func InitGit(targetDir string, ignores []string) {
 	commitCmd := exec.Command("git", "commit", "-m", "Initial commit")
 	commitCmd.Dir = targetDir
 	commitCmd.Run()
+
+}
+
+//ConvertToCamelCase converts string to
+func ConvertToCamelCase(s string, isUpper bool) string {
+
+	var r string
+	letters := strings.Split(s, "")
+
+	for i, l := range letters {
+
+	}
 
 }
