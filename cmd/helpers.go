@@ -2,11 +2,43 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 )
+
+func createKataFile(fileName, funcName, directory, template string) {
+
+	extension := filepath.Ext(template)
+
+	bs := createContents(funcName, template)
+
+	file, err := os.Create(path.Join("./", directory, fileName+extension))
+
+	defer file.Close()
+
+	if err != nil {
+		fmt.Println("Error creating kata file", fileName, err)
+	}
+
+	file.Write(bs)
+}
+
+func createContents(n string, t string) []byte {
+	gopath := os.Getenv("GOPATH")
+
+	bs, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", t))
+
+	if err != nil {
+		fmt.Println("error reading template:", err)
+	}
+
+	contents := strings.ReplaceAll(string(bs), "KATANAME", n)
+	return []byte(contents)
+}
 
 func initGit(targetDir string, ignores []string) {
 	initCmd := exec.Command("git", "init")

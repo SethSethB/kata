@@ -52,8 +52,8 @@ to quickly create a Cobra application.`,
 		setupNode(targetDir)
 
 		fmt.Println("Writing kata files...")
-		createFile(name, name, "mainFunction.js", ".js")
-		createFile(name, name+".spec", "testSuite.js", ".js")
+		createKataFile(name, name, targetDir, "mainFunction.js")
+		createKataFile(name+".spec", name, targetDir, "testSuite.js")
 
 		if git == true {
 			initGit(targetDir, []string{"node_modules", "plp", "pss"})
@@ -105,34 +105,6 @@ func setupNode(targetDir string) {
 	if err != nil {
 		fmt.Println("error updating package.json", err)
 	}
-}
-
-func createFile(kataName, fileName, fileTemplate, extension string) {
-
-	bs := createContents(kataName, fileTemplate)
-
-	file, err := os.Create(path.Join("./", kataName, fileName+extension))
-
-	defer file.Close()
-
-	if err != nil {
-		fmt.Println("Error creating kata file", kataName, err)
-	}
-
-	file.Write(bs)
-}
-
-func createContents(name string, template string) []byte {
-	gopath := os.Getenv("GOPATH")
-
-	bs, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", template))
-
-	if err != nil {
-		fmt.Println("error reading template:", err)
-	}
-
-	contents := strings.ReplaceAll(string(bs), "KATANAME", name)
-	return []byte(contents)
 }
 
 func init() {
