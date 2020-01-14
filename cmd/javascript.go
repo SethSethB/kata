@@ -52,11 +52,11 @@ to quickly create a Cobra application.`,
 		setupNode(targetDir)
 
 		fmt.Println("Writing kata files...")
-		createFile(name, name, "mainFunction.js")
-		createFile(name, name+".spec", "testSuite.js")
+		createFile(name, name, "mainFunction.js", ".js")
+		createFile(name, name+".spec", "testSuite.js", ".js")
 
 		if git == true {
-			InitGit(targetDir, []string{"node_modules", "plp", "pss"})
+			initGit(targetDir, []string{"node_modules", "plp", "pss"})
 		}
 
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
@@ -107,11 +107,11 @@ func setupNode(targetDir string) {
 	}
 }
 
-func createFile(kataName string, fileName string, fileTemplate string) {
+func createFile(kataName, fileName, fileTemplate, extension string) {
 
 	bs := createContents(kataName, fileTemplate)
 
-	file, err := os.Create(path.Join("./", kataName, fileName+".js"))
+	file, err := os.Create(path.Join("./", kataName, fileName+extension))
 
 	defer file.Close()
 

@@ -8,8 +8,7 @@ import (
 	"strings"
 )
 
-//InitGit Initialises git, creates .gitignore and adds initial commit
-func InitGit(targetDir string, ignores []string) {
+func initGit(targetDir string, ignores []string) {
 	initCmd := exec.Command("git", "init")
 	initCmd.Dir = targetDir
 
@@ -42,14 +41,35 @@ func InitGit(targetDir string, ignores []string) {
 
 }
 
-//ConvertToCamelCase converts string to
-func ConvertToCamelCase(s string, isUpper bool) string {
+func convertToCamelCase(s string) string {
+	isUpper := false
 
 	var r string
 	letters := strings.Split(s, "")
 
-	for i, l := range letters {
+	for _, l := range letters {
 
+		if l == " " {
+			isUpper = true
+			continue
+		}
+
+		if isUpper {
+			r += strings.ToUpper(l)
+			isUpper = false
+		} else {
+			r += strings.ToLower(l)
+		}
 	}
+	return r
+}
 
+func convertToUpperCamelCase(s string) string {
+
+	c := convertToCamelCase(s)
+	bs := []byte(c)
+
+	firstChar := string(bs[0])
+
+	return strings.Replace(c, firstChar, strings.ToUpper(firstChar), 1)
 }
