@@ -36,9 +36,9 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		kataName := createKataName(args)
 
-		kataName := args[0]
-		targetDir := path.Join("./", convertToCamelCase(kataName))
+		targetDir := path.Join("./", kataName)
 
 		if gradle == true {
 			fmt.Println("Creating gradle project")
@@ -56,15 +56,15 @@ to quickly create a Cobra application.`,
 				".idea/",
 			})
 		}
-		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && mvn test\" to run test suite", convertToCamelCase(kataName))
+		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && mvn test\" to run test suite", kataName)
 		defer fmt.Println(finalMessage)
 	},
 }
 
 func createMaven(n string) {
 
-	className := convertToUpperCamelCase(n)
-	targetDir := path.Join("./", convertToCamelCase(n))
+	targetDir := path.Join("./", n)
+	className := convertLowerCamelCaseToUpper(n)
 
 	classDir := path.Join(targetDir, "/src/main/java/com/kata")
 	testDir := path.Join(targetDir, "/src/test/java/com/kata")

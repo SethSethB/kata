@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -96,12 +97,32 @@ func convertToCamelCase(s string) string {
 	return r
 }
 
-func convertToUpperCamelCase(s string) string {
+func convertLowerCamelCaseToUpper(s string) string {
 
-	c := convertToCamelCase(s)
-	bs := []byte(c)
+	bs := []byte(s)
 
 	firstChar := string(bs[0])
 
-	return strings.Replace(c, firstChar, strings.ToUpper(firstChar), 1)
+	return strings.Replace(s, firstChar, strings.ToUpper(firstChar), 1)
+}
+
+func createKataName(args []string) string {
+	if len(args) == 0 {
+		return promptName()
+	}
+	return args[0]
+}
+
+func promptName() string {
+	fmt.Print("Enter kata name: ")
+
+	s := bufio.NewScanner(os.Stdin)
+	s.Scan()
+	n := s.Text()
+
+	if len(n) == 0 {
+		return promptName()
+	}
+
+	return convertToCamelCase(n)
 }

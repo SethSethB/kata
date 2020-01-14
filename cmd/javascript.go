@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -38,13 +37,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var name string
-
-		if len(args) == 0 {
-			name = promptName()
-		} else {
-			name = args[0]
-		}
+		name := createKataName(args)
 
 		os.Mkdir(name, os.ModePerm)
 		targetDir := path.Join("./", name)
@@ -56,26 +49,12 @@ to quickly create a Cobra application.`,
 		createKataFile(name+".spec", name, targetDir, "testSuite.js")
 
 		if git == true {
-			initGit(targetDir, []string{"node_modules", "plp", "pss"})
+			initGit(targetDir, []string{"node_modules"})
 		}
 
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
 		fmt.Println(finalMessage)
 	},
-}
-
-func promptName() string {
-	fmt.Print("Enter kata name: ")
-
-	s := bufio.NewScanner(os.Stdin)
-	s.Scan()
-	n := s.Text()
-
-	if len(n) == 0 {
-		return promptName()
-	}
-
-	return n
 }
 
 func setupNode(targetDir string) {
@@ -101,6 +80,7 @@ func setupNode(targetDir string) {
 		fmt.Println("error reading package.json", err)
 	}
 	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
+
 	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
 	if err != nil {
 		fmt.Println("error updating package.json", err)
