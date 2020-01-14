@@ -40,15 +40,15 @@ to quickly create a Cobra application.`,
 		kataName := args[0]
 		targetDir := path.Join("./", convertToCamelCase(kataName))
 
+		if git == true {
+			initGit(targetDir, []string{})
+		}
+
 		if gradle == true {
 			fmt.Println("Creating gradle project")
 		} else {
 			fmt.Println("Creating maven project")
 			createMaven(kataName)
-		}
-
-		if git == true {
-			initGit(targetDir, []string{})
 		}
 	},
 }
@@ -56,22 +56,20 @@ to quickly create a Cobra application.`,
 func createMaven(n string) {
 
 	className := convertToUpperCamelCase(n)
-	pathName := convertToCamelCase(n)
+	targetDir := path.Join("./", convertToCamelCase(n))
 
-	classDir := path.Join("./", pathName, "/main/java/com/kata")
-	testDir := path.Join("./", pathName, "/test/java/")
+	classDir := path.Join(targetDir, "/src/main/java/com/kata")
+	testDir := path.Join(targetDir, "/src/test/java/com/kata")
 
 	os.MkdirAll(classDir, os.ModePerm)
 	os.MkdirAll(testDir, os.ModePerm)
 
-	createFile(n, className, "/java/mainClass.java", ".java")
+	createKataFile(className, className, classDir, "/java/mainClass.java")
+	createKataFile(className+"Test", className, testDir, "/java/testClass.java")
+	createKataFile("pom", "", targetDir, "/java/pom.xml")
 
-	testFile, err := os.Create(path.Join(testDir, className+"Test.java"))
-	if err != nil {
-		fmt.Println("Error creating kata file", className, err)
-	}
-	defer testFile.Close()
-
+	finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && maven test\" to run test suite", convertToCamelCase(n))
+	fmt.Println(finalMessage)
 }
 
 func init() {
