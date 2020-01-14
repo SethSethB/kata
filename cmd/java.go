@@ -40,16 +40,24 @@ to quickly create a Cobra application.`,
 		kataName := args[0]
 		targetDir := path.Join("./", convertToCamelCase(kataName))
 
-		if git == true {
-			initGit(targetDir, []string{})
-		}
-
 		if gradle == true {
 			fmt.Println("Creating gradle project")
 		} else {
-			fmt.Println("Creating maven project")
+			fmt.Println("Creating maven project...")
 			createMaven(kataName)
 		}
+
+		if git == true {
+			initGit(targetDir, []string{
+				".classpath",
+				".project",
+				".settings/",
+				"target/",
+				".idea/",
+			})
+		}
+		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && mvn test\" to run test suite", convertToCamelCase(kataName))
+		defer fmt.Println(finalMessage)
 	},
 }
 
@@ -67,9 +75,6 @@ func createMaven(n string) {
 	createKataFile(className, className, classDir, "/java/mainClass.java")
 	createKataFile(className+"Test", className, testDir, "/java/testClass.java")
 	createKataFile("pom", "", targetDir, "/java/pom.xml")
-
-	finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && maven test\" to run test suite", convertToCamelCase(n))
-	fmt.Println(finalMessage)
 }
 
 func init() {

@@ -1,3 +1,5 @@
+package com.kata;
+
 import com.kata.KATANAME;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
