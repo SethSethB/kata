@@ -72,9 +72,13 @@ func createMaven(n string) {
 	os.MkdirAll(classDir, os.ModePerm)
 	os.MkdirAll(testDir, os.ModePerm)
 
-	createKataFile(className, className, classDir, "/java/mainClass.java")
-	createKataFile(className+"Test", className, testDir, "/java/testClass.java")
-	createKataFile("pom", "", targetDir, "/java/pom.xml")
+	mainContents := createContents(n, "/java/mainClass.java")
+	testContents := createContents(n, "/java/testClass.java")
+	pomContents := createContents("pom.xml", "/java/pom.xml")
+
+	createKataFile(mainContents, className+".java", classDir)
+	createKataFile(testContents, className+"Test.java", testDir)
+	createKataFile(pomContents, "pom.xml", targetDir)
 }
 
 func init() {

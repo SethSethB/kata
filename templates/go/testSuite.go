@@ -1,10 +1,10 @@
-package KATANAME
+package kataname
 
 import "testing"
 
-func TestKATANAME(t *testing.T) {
+func TestKataName(t *testing.T) {
 
-	actual := KATANAME()
+	actual := kataName()
 	expected := "example"
 
 	if actual != expected {

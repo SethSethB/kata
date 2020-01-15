@@ -39,8 +39,10 @@ to quickly create a Cobra application.`,
 		targetDir := path.Join("./", name)
 
 		fmt.Println("Writing kata files...")
-		createKataFile(name, name, targetDir, "/go/mainFunction.go")
-		createKataFile(name+"_test", name, targetDir, "/go/testSuite.go")
+		mainContents := createContents(name, "/go/mainFunction.go")
+		testContents := createContents(name, "/go/testSuite.go")
+		createKataFile(mainContents, name+".go", targetDir)
+		createKataFile(testContents, name+"_test.go", targetDir)
 
 		if git == true {
 			initGit(targetDir, []string{"node_modules"})

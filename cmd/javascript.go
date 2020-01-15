@@ -45,8 +45,10 @@ to quickly create a Cobra application.`,
 		setupNode(targetDir)
 
 		fmt.Println("Writing kata files...")
-		createKataFile(name, name, targetDir, "mainFunction.js")
-		createKataFile(name+".spec", name, targetDir, "testSuite.js")
+		mainContents := createContents(name, "/javascript/mainFunction.js")
+		testContents := createContents(name, "/javascript/testSuite.js")
+		createKataFile(mainContents, name+".js", targetDir)
+		createKataFile(testContents, name+".spec.js", targetDir)
 
 		if git == true {
 			initGit(targetDir, []string{"node_modules"})

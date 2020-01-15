@@ -7,17 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 	"strings"
 )
 
-func createKataFile(fileName, funcName, directory, template string) {
+func createKataFile(contents []byte, fileName, directory string) {
 
-	extension := filepath.Ext(template)
-
-	bs := createContents(funcName, template)
-
-	file, err := os.Create(path.Join("./", directory, fileName+extension))
+	file, err := os.Create(path.Join("./", directory, fileName))
 
 	defer file.Close()
 
@@ -25,7 +20,7 @@ func createKataFile(fileName, funcName, directory, template string) {
 		fmt.Println("Error creating kata file", fileName, err)
 	}
 
-	file.Write(bs)
+	file.Write(contents)
 }
 
 func createContents(n string, t string) []byte {
@@ -37,7 +32,10 @@ func createContents(n string, t string) []byte {
 		fmt.Println("error reading template:", err)
 	}
 
-	contents := strings.ReplaceAll(string(bs), "KATANAME", n)
+	contents := strings.ReplaceAll(string(bs), "kataName", n)
+	contents = strings.ReplaceAll(contents, "KataName", convertLowerCamelCaseToUpper(n))
+	contents = strings.ReplaceAll(contents, "kataname", strings.ToLower(n))
+
 	return []byte(contents)
 }
 

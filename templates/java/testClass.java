@@ -1,20 +1,20 @@
 package com.kata;
 
-import com.kata.KATANAME;
+import com.kata.KataName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class KATANAMETest {
+public class KataNameTest {
 
-    KATANAME example;
+    KataName example;
 
     @BeforeEach
     void setup(){
-        example = new KATANAME();
+        example = new KataName();
     }
 
     @Test
-    void stubMethodForKATANAMEExecutes(){
+    void stubMethodForKataNameExecutes(){
         example.method();
     }
 

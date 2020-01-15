@@ -1,6 +1,6 @@
 package com.kata;
 
-public class KATANAME {
+public class KataName {
 
     public void method (){
 

@@ -1,5 +1,5 @@
-package KATANAME
+package kataname
 
-func KATANAME() string {
+func kataName() string {
 	return "example"
 }
