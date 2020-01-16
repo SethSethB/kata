@@ -23,16 +23,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// goCmd represents the go command
 var goCmd = &cobra.Command{
 	Use:   "go",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Creates the boilerplate files for a go kata",
+	Long: `The go command does the following:
+	
+	Creates a new directory
+	Creates a function file & test file based on the name provided
+	If no args are provided it will prompt for a function name.
+	Names are converted to camelcase automatically. E.g. "some EXAMPLE name" will be named someExampleName
+	If run with the git flag it will create a new repository and commit the inital files
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		name := createKataName(args)
 		os.Mkdir(name, os.ModePerm)
@@ -55,14 +56,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	RootCmd.AddCommand(goCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// goCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// goCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

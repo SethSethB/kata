@@ -25,16 +25,16 @@ import (
 
 var gradle bool
 
-// javaCmd represents the java command
 var javaCmd = &cobra.Command{
 	Use:   "java",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Creates the boilerplate files for a java kata",
+	Long: `The java command does the following:
+	
+	Creates a new directory
+	Creates a function file & test file based on the name provided
+	If no args are provided it will prompt for a function name.
+	Names are converted to camelcase automatically. E.g. "some EXAMPLE name" will be named someExampleName
+	If run with the git flag it will create a new repository and commit the inital files`,
 	Run: func(cmd *cobra.Command, args []string) {
 		kataName := createKataName(args)
 
@@ -83,14 +83,5 @@ func createMaven(n string) {
 
 func init() {
 	RootCmd.AddCommand(javaCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// javaCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	javaCmd.Flags().BoolVarP(&gradle, "gradle", "", false, "Initialises as gradle rather than maven")
+	// javaCmd.Flags().BoolVarP(&gradle, "gradle", "", false, "Initialises as gradle rather than maven")
 }

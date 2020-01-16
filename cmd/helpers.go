@@ -96,11 +96,8 @@ func convertToCamelCase(s string) string {
 }
 
 func convertLowerCamelCaseToUpper(s string) string {
-
 	bs := []byte(s)
-
 	firstChar := string(bs[0])
-
 	return strings.Replace(s, firstChar, strings.ToUpper(firstChar), 1)
 }
 
