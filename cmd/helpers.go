@@ -108,7 +108,7 @@ func createKataName(args []string) string {
 	if len(args) == 0 {
 		return promptName()
 	}
-	return args[0]
+	return convertToCamelCase(args[0])
 }
 
 func promptName() string {
