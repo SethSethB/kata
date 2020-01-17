@@ -29,8 +29,8 @@ var goCmd = &cobra.Command{
 	Long: `The go command does the following:
 	
 	Creates a new directory
-	Creates a function file & test file based on the name provided
-	If no args are provided it will prompt for a function name.
+	Creates a function & test files based on the name provided
+	If no args are provided it will prompt for a  name.
 	Names are converted to camelcase automatically. E.g. "some EXAMPLE name" will be named someExampleName
 	If run with the git flag it will create a new repository and commit the inital files
 	`,
