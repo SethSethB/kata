@@ -1,25 +1,30 @@
 package cmd
 
-import "testing"
+import (
+	"testing"
 
-func testConvertToCamelCase(t *testing.T, arg, expected string) {
-	actual := convertToCamelCase(arg)
-	if actual != expected {
-		t.Errorf("expected %v but got %v", expected, actual)
-	}
-}
+	. "github.com/franela/goblin"
+)
 
-func TestConvertToCamelCaseSuite(t *testing.T) {
-	testConvertToCamelCase(t, "simple", "simple")
-	testConvertToCamelCase(t, "less simple", "lessSimple")
-	testConvertToCamelCase(t, "CasE mIXture namE", "caseMixtureName")
-	testConvertToCamelCase(t, "MultiPle    spaceS", "multipleSpaces")
-}
+func TestHelpersSuite(t *testing.T) {
+	g := Goblin(t)
 
-func TestConvertLowerCamelCaseToUpperSuite(t *testing.T) {
-	actual := convertLowerCamelCaseToUpper("camelCase")
-	expected := "CamelCase"
-	if actual != expected {
-		t.Errorf("expected %v but got %v", expected, actual)
-	}
+	g.Describe("ConvertToCamelCase", func() {
+		g.It("Handles simple case", func() {
+			g.Assert("simple").Equal(convertToCamelCase("simple"))
+		})
+
+		g.It("Converts words separated by space", func() {
+			g.Assert("lessSimple").Equal(convertToCamelCase("less Simple"))
+		})
+
+		g.It("Converts case mixtures", func() {
+			g.Assert("caseMixtureName").Equal(convertToCamelCase("CasE mIXture namE"))
+		})
+
+		g.It("Handles multiple spaces", func() {
+			g.Assert("multipleSpaces").Equal(convertToCamelCase("MultiPle    spaceS"))
+		})
+
+	})
 }

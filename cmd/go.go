@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path"
 
 	"github.com/spf13/cobra"
@@ -41,9 +42,11 @@ var goCmd = &cobra.Command{
 
 		fmt.Println("Writing kata files...")
 		mainContents := createContents(name, "/go/mainFunction.go")
-		testContents := createContents(name, "/go/testSuite.go")
+		testContents := createContents(name, "/go/testSuiteGoblin.go")
 		createKataFile(mainContents, name+".go", targetDir)
 		createKataFile(testContents, name+"_test.go", targetDir)
+
+		initialiseGoMod(targetDir, name)
 
 		if git == true {
 			initGit(targetDir, []string{"node_modules"})
@@ -52,6 +55,16 @@ var goCmd = &cobra.Command{
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && go test\" to run test suite", name)
 		fmt.Println(finalMessage)
 	},
+}
+
+func initialiseGoMod(targetDir, name string) {
+	fmt.Println("Initialising go mod...")
+	initModCmd := exec.Command("go", "mod", "init", "kata/"+name)
+	initModCmd.Dir = targetDir
+	err := initModCmd.Run()
+	if err != nil {
+		fmt.Println("Error initialising go module: ", err)
+	}
 }
 
 func init() {
