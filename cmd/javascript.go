@@ -25,6 +25,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var jest bool
+
 var javascriptCmd = &cobra.Command{
 	Use:   "javascript",
 	Short: "Creates the boilerplate files for a javascript kata",
@@ -43,12 +45,22 @@ var javascriptCmd = &cobra.Command{
 		os.Mkdir(name, os.ModePerm)
 		targetDir := path.Join("./", name)
 
-		setupNode(targetDir)
+		initNode(targetDir)
 
 		fmt.Println("Writing kata files...")
 		mainContents := createContents(name, "/javascript/mainFunction.js")
-		testContents := createContents(name, "/javascript/testSuite.js")
 		createKataFile(mainContents, name+".js", targetDir)
+
+		var testContents []byte
+
+		if jest {
+			installJestDependencies(targetDir)
+			testContents = createContents(name, "/javascript/testSuiteJest.js")
+		} else {
+			installDefaultDependencies(targetDir)
+			testContents = createContents(name, "/javascript/testSuite.js")
+		}
+
 		createKataFile(testContents, name+".spec.js", targetDir)
 
 		if git == true {
@@ -60,7 +72,7 @@ var javascriptCmd = &cobra.Command{
 	},
 }
 
-func setupNode(targetDir string) {
+func initNode(targetDir string) {
 	initCmd := exec.Command("npm", "init", "-y")
 	initCmd.Dir = targetDir
 
@@ -69,11 +81,15 @@ func setupNode(targetDir string) {
 	if err != nil {
 		fmt.Println("Error inialising npm: ", err)
 	}
+}
+
+func installDefaultDependencies(targetDir string) {
 
 	fmt.Println("Installing node dependencies...")
 	installCmd := exec.Command("npm", "install", "-D", "mocha", "chai")
 	installCmd.Dir = targetDir
-	err = installCmd.Run()
+
+	err := installCmd.Run()
 	if err != nil {
 		fmt.Println("Error installing node modules: ", err)
 	}
@@ -90,6 +106,30 @@ func setupNode(targetDir string) {
 	}
 }
 
+func installJestDependencies(targetDir string) {
+	fmt.Println("Installing node dependencies...")
+	installCmd := exec.Command("npm", "install", "-D", "jest")
+	installCmd.Dir = targetDir
+
+	err := installCmd.Run()
+	if err != nil {
+		fmt.Println("Error installing node modules: ", err)
+	}
+
+	bs, err := ioutil.ReadFile(path.Join(targetDir, "/package.json"))
+	if err != nil {
+		fmt.Println("error reading package.json", err)
+	}
+	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "jest")
+
+	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
+	if err != nil {
+		fmt.Println("error updating package.json", err)
+	}
+}
+
 func init() {
 	RootCmd.AddCommand(javascriptCmd)
+	javascriptCmd.Flags().BoolVarP(&jest, "jest", "j", false, "creates kata with jest as test runner")
+
 }
