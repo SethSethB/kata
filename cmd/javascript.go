@@ -52,17 +52,23 @@ var javascriptCmd = &cobra.Command{
 		mainContents := createContents(name, "/javascript/mainFunction.js")
 		createKataFile(mainContents, name+".js", targetDir)
 
+		var testScript string
+		var dependencies []string
 		var testContents []byte
 
 		if jest {
-			installJestDependencies(targetDir)
+			testScript = "jest --watchAll"
+			dependencies = []string{"jest"}
 			testContents = createContents(name, "/javascript/testSuiteJest.js")
 		} else {
-			installDefaultDependencies(targetDir)
+			testScript = "mocha *.spec.js"
+			dependencies = []string{"mocha", "chai"}
 			testContents = createContents(name, "/javascript/testSuite.js")
 		}
 
 		createKataFile(testContents, name+".spec.js", targetDir)
+		installDependencies(targetDir, dependencies)
+		configureTestScript(targetDir, testScript)
 
 		if git {
 			initGit(targetDir, []string{"node_modules"})
@@ -84,44 +90,27 @@ func initNode(targetDir string) {
 	}
 }
 
-func installDefaultDependencies(targetDir string) {
+func installDependencies(targetDir string, deps []string) {
+
+	args := []string{"install", "-D"}
+	args = append(args, deps...)
 
 	fmt.Println("Installing node dependencies...")
-	installCmd := exec.Command("npm", "install", "-D", "mocha", "chai")
+	installCmd := exec.Command("npm", args...)
 	installCmd.Dir = targetDir
 
 	err := installCmd.Run()
 	if err != nil {
 		fmt.Println("Error installing node modules: ", err)
-	}
-
-	bs, err := ioutil.ReadFile(path.Join(targetDir, "/package.json"))
-	if err != nil {
-		fmt.Println("error reading package.json", err)
-	}
-	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "mocha *.spec.js")
-
-	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
-	if err != nil {
-		fmt.Println("error updating package.json", err)
 	}
 }
 
-func installJestDependencies(targetDir string) {
-	fmt.Println("Installing node dependencies...")
-	installCmd := exec.Command("npm", "install", "-D", "jest")
-	installCmd.Dir = targetDir
-
-	err := installCmd.Run()
-	if err != nil {
-		fmt.Println("Error installing node modules: ", err)
-	}
-
+func configureTestScript(targetDir, testScript string) {
 	bs, err := ioutil.ReadFile(path.Join(targetDir, "/package.json"))
 	if err != nil {
 		fmt.Println("error reading package.json", err)
 	}
-	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", "jest")
+	contents := strings.ReplaceAll(string(bs), "echo \\\"Error: no test specified\\\" && exit 1", testScript)
 
 	err = ioutil.WriteFile(path.Join(targetDir, "/package.json"), []byte(contents), os.ModePerm)
 	if err != nil {
