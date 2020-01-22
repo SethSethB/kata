@@ -48,7 +48,7 @@ var goCmd = &cobra.Command{
 
 		initialiseGoMod(targetDir, name)
 
-		if git == true {
+		if git {
 			initGit(targetDir, []string{"node_modules"})
 		}
 

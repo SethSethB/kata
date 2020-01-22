@@ -40,14 +40,14 @@ var javaCmd = &cobra.Command{
 
 		targetDir := path.Join("./", kataName)
 
-		if gradle == true {
+		if gradle {
 			fmt.Println("Creating gradle project")
 		} else {
 			fmt.Println("Creating maven project...")
 			createMaven(kataName)
 		}
 
-		if git == true {
+		if git {
 			initGit(targetDir, []string{
 				".classpath",
 				".project",

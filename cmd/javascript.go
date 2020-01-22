@@ -36,7 +36,8 @@ var javascriptCmd = &cobra.Command{
 	Creates class & test files based on the name provided
 	If no args are provided it will prompt for a name.
 	Names are converted to camelcase automatically. E.g. "some EXAMPLE name" will be named someExampleName
-	Inititates npm and installs mocha/chai as dev dependencies
+	Inititates npm and installs mocha/chai as dev dependencies by default
+	If run with the jest flag will initialise with jest rather than mocha/chai
 	If run with the git flag it will create a new repository and commit the inital files`,
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -63,7 +64,7 @@ var javascriptCmd = &cobra.Command{
 
 		createKataFile(testContents, name+".spec.js", targetDir)
 
-		if git == true {
+		if git {
 			initGit(targetDir, []string{"node_modules"})
 		}
 
