@@ -49,7 +49,9 @@ func initGit(targetDir string, ignores []string) {
 		fmt.Println("error initalising git: ", err)
 	}
 
-	gitIgnore, _ := os.Create(path.Join("./", targetDir, ".gitignore"))
+	gitIgnore, _ := os.Create(path.Join(targetDir, ".gitignore"))
+
+	fmt.Println(path.Join(targetDir, ".gitignore"))
 	defer gitIgnore.Close()
 
 	for i, ignore := range ignores {
@@ -69,7 +71,6 @@ func initGit(targetDir string, ignores []string) {
 	commitCmd := exec.Command("git", "commit", "-m", "Initial commit")
 	commitCmd.Dir = targetDir
 	commitCmd.Run()
-
 }
 
 func convertToCamelCase(s string) string {

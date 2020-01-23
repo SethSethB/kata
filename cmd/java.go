@@ -64,8 +64,6 @@ var javaCmd = &cobra.Command{
 func createMaven(n string) {
 
 	targetDir := path.Join("./", n)
-	className := convertLowerCamelCaseToUpper(n)
-
 	classDir := path.Join(targetDir, "/src/main/java/com/kata")
 	testDir := path.Join(targetDir, "/src/test/java/com/kata")
 
@@ -76,6 +74,7 @@ func createMaven(n string) {
 	testContents := createContents(n, "/java/testClass.java")
 	pomContents := createContents("pom.xml", "/java/pom.xml")
 
+	className := convertLowerCamelCaseToUpper(n)
 	createKataFile(mainContents, className+".java", classDir)
 	createKataFile(testContents, className+"Test.java", testDir)
 	createKataFile(pomContents, "pom.xml", targetDir)
