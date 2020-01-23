@@ -51,7 +51,6 @@ func initGit(targetDir string, ignores []string) {
 
 	gitIgnore, _ := os.Create(path.Join(targetDir, ".gitignore"))
 
-	fmt.Println(path.Join(targetDir, ".gitignore"))
 	defer gitIgnore.Close()
 
 	for i, ignore := range ignores {
