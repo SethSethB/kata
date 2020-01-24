@@ -43,6 +43,8 @@ func TestHelpersSuite(t *testing.T) {
 
 		g.BeforeEach(func() {
 			tempDir := path.Join(os.TempDir(), "testKataDir")
+
+			os.RemoveAll(tempDir)
 			kataPath = path.Join(tempDir, "testKata")
 			os.MkdirAll(kataPath, 0777)
 		})
