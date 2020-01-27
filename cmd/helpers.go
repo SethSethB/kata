@@ -23,19 +23,27 @@ func createKataFile(contents []byte, fileName, directory string) {
 	file.Write(contents)
 }
 
-func createContents(n string, t string) []byte {
+func createContents(name string, t string) []byte {
 	gopath := os.Getenv("GOPATH")
 
-	bs, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", t))
+	templateContent, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", t))
 
 	if err != nil {
 		fmt.Println("error reading template:", err)
 	}
 
+	return replacePlaceholders(templateContent, name)
+	// contents := strings.ReplaceAll(string(bs), "kataName", n)
+	// contents = strings.ReplaceAll(contents, "KataName", convertLowerCamelCaseToUpper(n))
+	// contents = strings.ReplaceAll(contents, "kataname", strings.ToLower(n))
+
+	// return []byte(contents)
+}
+
+func replacePlaceholders(bs []byte, n string) []byte {
 	contents := strings.ReplaceAll(string(bs), "kataName", n)
 	contents = strings.ReplaceAll(contents, "KataName", convertLowerCamelCaseToUpper(n))
 	contents = strings.ReplaceAll(contents, "kataname", strings.ToLower(n))
-
 	return []byte(contents)
 }
 
