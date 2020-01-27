@@ -33,11 +33,6 @@ func createContents(name string, t string) []byte {
 	}
 
 	return replacePlaceholders(templateContent, name)
-	// contents := strings.ReplaceAll(string(bs), "kataName", n)
-	// contents = strings.ReplaceAll(contents, "KataName", convertLowerCamelCaseToUpper(n))
-	// contents = strings.ReplaceAll(contents, "kataname", strings.ToLower(n))
-
-	// return []byte(contents)
 }
 
 func replacePlaceholders(bs []byte, n string) []byte {
