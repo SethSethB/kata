@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
 	"strings"
 
@@ -46,7 +45,13 @@ var javascriptCmd = &cobra.Command{
 		os.Mkdir(name, os.ModePerm)
 		targetDir := path.Join("./", name)
 
-		initNode(targetDir)
+		executeCmdInKataDir(command{
+			dir:    targetDir,
+			name:   "npm",
+			args:   []string{"init", "-y"},
+			msg:    "Initialising npm...",
+			errMsg: "Error inialising npm",
+		})
 
 		fmt.Println("Writing kata files...")
 		mainContents := createContents(name, "/javascript/mainFunction.js")
@@ -79,30 +84,18 @@ var javascriptCmd = &cobra.Command{
 	},
 }
 
-func initNode(targetDir string) {
-	initCmd := exec.Command("npm", "init", "-y")
-	initCmd.Dir = targetDir
-
-	fmt.Println("Initialising npm...")
-	err := initCmd.Run()
-	if err != nil {
-		fmt.Println("Error inialising npm: ", err)
-	}
-}
-
 func installDependencies(targetDir string, deps []string) {
 
 	args := []string{"install", "-D"}
 	args = append(args, deps...)
 
-	fmt.Println("Installing node dependencies...")
-	installCmd := exec.Command("npm", args...)
-	installCmd.Dir = targetDir
-
-	err := installCmd.Run()
-	if err != nil {
-		fmt.Println("Error installing node modules: ", err)
-	}
+	executeCmdInKataDir(command{
+		dir:    targetDir,
+		name:   "npm",
+		args:   args,
+		msg:    "InstallingDependencies...",
+		errMsg: "Error inialising npm",
+	})
 }
 
 func configureTestScript(targetDir, testScript string) {

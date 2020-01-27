@@ -57,7 +57,7 @@ var javaCmd = &cobra.Command{
 			})
 		}
 		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && mvn test\" to run test suite", kataName)
-		defer fmt.Println(finalMessage)
+		fmt.Println(finalMessage)
 	},
 }
 
