@@ -87,6 +87,35 @@ func TestHelpersSuite(t *testing.T) {
 			g.Assert(string(bs)).Equal("testfile\nnode_modules")
 
 		})
+	})
+
+	g.Describe("replacePlaceholders", func() {
+		g.It("does not change content with no placeholders", func() {
+			name := "funnyFacesKata"
+			content := []byte("nothing to replace")
+			g.Assert(string(content)).Equal(string(replacePlaceholders(content, name)))
+		})
+
+		g.It("updates kataName places holders with name", func() {
+			name := "funnyFacesKata"
+			content := []byte("this kataName and /nkataName will change")
+			expected := []byte("this " + name + " and /n" + name + " will change")
+			g.Assert(string(expected)).Equal(string(replacePlaceholders(content, name)))
+		})
+
+		g.It("updates KataName places holders with Name", func() {
+			name := "funnyFacesKata"
+			content := []byte("this kataName and /nKataName will change")
+			expected := []byte("this " + name + " and /nFunnyFacesKata will change")
+			g.Assert(string(expected)).Equal(string(replacePlaceholders(content, name)))
+		})
+
+		g.It("updates kataname places holders with Name", func() {
+			name := "funnyFacesKata"
+			content := []byte("this kataName and /nKataName will change. And also kataname")
+			expected := []byte("this " + name + " and /nFunnyFacesKata will change. And also funnyfaceskata")
+			g.Assert(string(expected)).Equal(string(replacePlaceholders(content, name)))
+		})
 
 	})
 
