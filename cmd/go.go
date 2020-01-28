@@ -57,7 +57,7 @@ var goCmd = &cobra.Command{
 			initGit(targetDir, []string{"node_modules"})
 		}
 
-		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && go test\" to run test suite", name)
+		finalMessage := fmt.Sprintf("\nComplete! \nRun the command \"cd %s && go test\" to run test suite", name)
 		fmt.Println(finalMessage)
 	},
 }
