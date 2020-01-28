@@ -37,15 +37,9 @@ var javaCmd = &cobra.Command{
 	If run with the git flag it will create a new repository and commit the inital files`,
 	Run: func(cmd *cobra.Command, args []string) {
 		kataName := createKataName(args)
-
 		targetDir := path.Join("./", kataName)
 
-		if gradle {
-			fmt.Println("Creating gradle project")
-		} else {
-			fmt.Println("Creating maven project...")
-			createMaven(kataName)
-		}
+		createMaven(kataName)
 
 		if git {
 			initGit(targetDir, []string{
@@ -56,12 +50,13 @@ var javaCmd = &cobra.Command{
 				".idea/",
 			})
 		}
-		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && mvn test\" to run test suite", kataName)
+		finalMessage := fmt.Sprintf("\nComplete! \nRun the command \"cd %s && mvn test\" to run test suite", kataName)
 		fmt.Println(finalMessage)
 	},
 }
 
 func createMaven(n string) {
+	fmt.Println("Creating maven project...")
 
 	targetDir := path.Join("./", n)
 	classDir := path.Join(targetDir, "/src/main/java/com/kata")
@@ -82,5 +77,4 @@ func createMaven(n string) {
 
 func init() {
 	RootCmd.AddCommand(javaCmd)
-	// javaCmd.Flags().BoolVarP(&gradle, "gradle", "", false, "Initialises as gradle rather than maven")
 }

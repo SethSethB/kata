@@ -79,7 +79,7 @@ var javascriptCmd = &cobra.Command{
 			initGit(targetDir, []string{"node_modules"})
 		}
 
-		finalMessage := fmt.Sprintf("Complete! \nRun the command \"cd %s && npm test\" to run test suite", name)
+		finalMessage := fmt.Sprintf("\nComplete! \nRun the command \"cd %s && npm test\" to run test suite", name)
 		fmt.Println(finalMessage)
 	},
 }
@@ -93,7 +93,7 @@ func installDependencies(targetDir string, deps []string) {
 		dir:    targetDir,
 		name:   "npm",
 		args:   args,
-		msg:    "InstallingDependencies...",
+		msg:    "Installing Dependencies...",
 		errMsg: "Error inialising npm",
 	})
 }
