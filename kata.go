@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/sethsethb/kata-gen/cmd"
+	"github.com/sethsethb/kata/cmd"
 )
 
 func main() {

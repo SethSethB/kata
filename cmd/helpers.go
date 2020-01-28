@@ -26,7 +26,7 @@ func createKataFile(contents []byte, fileName, directory string) {
 func createContents(name string, t string) []byte {
 	gopath := os.Getenv("GOPATH")
 
-	templateContent, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata-gen/templates/", t))
+	templateContent, err := ioutil.ReadFile(path.Join(gopath, "/src/github.com/sethsethb/kata/templates/", t))
 
 	if err != nil {
 		fmt.Println("error reading template:", err)

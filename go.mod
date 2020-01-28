@@ -1,4 +1,4 @@
-module github.com/sethsethb/kata-gen
+module github.com/sethsethb/kata
 
 go 1.13
 
