@@ -54,7 +54,10 @@ func executeCmdInKataDir(cmd command) {
 	initCmd := exec.Command(cmd.name, cmd.args...)
 	initCmd.Dir = cmd.dir
 
-	fmt.Println(cmd.msg)
+	if cmd.msg != "" {
+		fmt.Println(cmd.msg)
+	}
+
 	err := initCmd.Run()
 	if err != nil {
 		fmt.Println(cmd.errMsg+":", err)
