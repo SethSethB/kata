@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	. "github.com/franela/goblin"
+	"github.com/spf13/afero"
 )
 
 func TestHelpersSuite(t *testing.T) {
@@ -119,4 +120,39 @@ func TestHelpersSuite(t *testing.T) {
 
 	})
 
+	g.Describe("createKataFile", func() {
+		g.It("creates new file with content", func() {
+			appFs = afero.NewMemMapFs()
+			c := []byte("test content")
+			n := "testname"
+			d := "testDirectory"
+			createKataFile(c, n, d)
+
+			expectedFile := path.Join(d, n)
+			f, _ := appFs.Open(expectedFile)
+
+			result, err := ioutil.ReadAll(f)
+			g.Assert(err == nil).IsTrue()
+			g.Assert(result).Equal(c)
+
+		})
+	})
+
+	g.Describe("createContents", func() {
+		g.It("getsContents from file and replaces them", func() {
+			appFs = afero.NewMemMapFs()
+
+			gopath := os.Getenv("GOPATH")
+			n := "testtemplate"
+			d := path.Join(gopath, "/src/github.com/sethsethb/kata/templates/")
+			appFs.MkdirAll(d, os.ModePerm)
+			f, _ := appFs.Create(path.Join(d, n))
+			c := "test content with kataName"
+			f.Write([]byte(c))
+
+			result := createContents("findTheGoose", "testtemplate")
+			g.Assert(string(result)).Equal("test content with findTheGoose")
+
+		})
+	})
 }

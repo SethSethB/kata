@@ -19,12 +19,15 @@ import (
 	"os"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
 var git bool
+
+var appFs = afero.NewOsFs()
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
