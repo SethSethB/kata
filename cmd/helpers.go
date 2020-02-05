@@ -3,45 +3,11 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 )
-
-func createKataFile(contents []byte, fileName, directory string) {
-	file, err := appFs.Create(path.Join("./", directory, fileName))
-
-	defer file.Close()
-
-	if err != nil {
-		fmt.Println("Error creating kata file", fileName, err)
-	}
-
-	file.Write(contents)
-}
-
-func createContents(name string, t string) []byte {
-	gopath := os.Getenv("GOPATH")
-
-	f, _ := appFs.Open(path.Join(gopath, "/src/github.com/sethsethb/kata/templates/", t))
-
-	templateContent, err := ioutil.ReadAll(f)
-
-	if err != nil {
-		fmt.Println("error reading template:", err)
-	}
-
-	return replacePlaceholders(templateContent, name)
-}
-
-func replacePlaceholders(bs []byte, n string) []byte {
-	contents := strings.ReplaceAll(string(bs), "kataName", n)
-	contents = strings.ReplaceAll(contents, "KataName", convertLowerCamelCaseToUpper(n))
-	contents = strings.ReplaceAll(contents, "kataname", strings.ToLower(n))
-	return []byte(contents)
-}
 
 type command struct {
 	dir    string
